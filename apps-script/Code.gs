@@ -10,6 +10,12 @@
  */
 const APP_PIN = 'baby1234';
 
+/**
+ * শিট থেকে Extensions > Apps Script দিয়ে খুললে এটা খালি রাখুন।
+ * আলাদা Apps Script প্রজেক্ট হলে শিটের লিংকের /d/ আর /edit-এর মাঝের অংশটা (Sheet ID) এখানে দিন।
+ */
+const SHEET_ID = '';
+
 const FIRST_ROW = 5; // ডাটা শুরু হয় ৫ নম্বর লাইন থেকে
 
 const SHEETS = {
@@ -74,7 +80,12 @@ function checkPin_(pin) {
 
 /* ---------- helpers ---------- */
 
-function ss_() { return SpreadsheetApp.getActiveSpreadsheet(); }
+function ss_() {
+  if (SHEET_ID) return SpreadsheetApp.openById(SHEET_ID);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('স্ক্রিপ্টটা কোনো শিটের সাথে যুক্ত নয়। Code.gs-এর SHEET_ID লাইনে শিটের ID দিন।');
+  return ss;
+}
 
 function sh_(key) {
   const s = ss_().getSheetByName(SHEETS[key]);
